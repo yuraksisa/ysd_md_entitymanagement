@@ -7,6 +7,8 @@ module Model
     
     attr_reader :id, :description, :model_class
     
+    @@entities = {}
+    
     #
     # Constructor
     #
@@ -22,26 +24,24 @@ module Model
       @description = description
       @model_class = model_class
 
-      @@entities ||= {}
-      @@entities[id.to_sym] = self
+      self.class.entities[id.to_sym] = self
+      
     end
       
     #
-    # Gets the entity info
+    # Get an entity info instance from its id
     #  
     def self.get(id)
-      
-     entity_info = if @@entities
-                     @@entities[id.to_sym]
-                   else
-                     nil
-                   end
+     
+     return entities[id.to_sym]
                            
     end  
       
     #
     # Get the aspects which can be configured for the entity
     #    
+    # @return [Array] array of ::Plugins::Aspect
+    #
     def get_aspects(context)
     
       aspects_ids = aspects.map { |ent_aspect| ent_aspect.aspect.to_sym }
@@ -52,6 +52,28 @@ module Model
       
       return aspects  
    
+    end
+    
+    #
+    # Get the entity aspects
+    #
+    # @return [Array] array of Model::EntityAspect
+    #
+    def entity_aspects
+      
+      aspects
+      
+    end
+    
+    #
+    # Get the entity aspect associated to the entity
+    #
+    # @return [EntityAspect]
+    #
+    def entity_aspect(aspect)
+      
+      (aspects.select { |entity_aspect| entity_aspect = aspect.to_sym }).first
+      
     end
     
     #
@@ -104,6 +126,14 @@ module Model
       
     end
     
+    #
+    # Retrieve the entities
+    #
+    def self.entities
+      
+      return @@entities
+    
+    end
     
   end #EntityInfo
 end #Model

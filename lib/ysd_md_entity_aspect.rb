@@ -19,7 +19,7 @@ module Model
     #
     def get_variable_name(attribute_id)
      
-      "aspect.#{aspect}.#{entity}.#{attribute_id}"
+      "aspect.#{aspect}.#{entity_info}.#{attribute_id}"
      
     end
     

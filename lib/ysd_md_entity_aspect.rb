@@ -31,6 +31,6 @@ module Model
       return :entity_management
     
     end
-    
+        
   end #EntityAspect
 end #Model

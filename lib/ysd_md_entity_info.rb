@@ -1,7 +1,17 @@
 module Model
-
   #
-  # Defines a entity. An entity can be extended using aspects
+  # Defines a entity which can be extended using aspects.
+  # Entities are representations of the domain model as User, Post, Message, ... 
+  #
+  # Any extension (plugin) declare its defined entities in the entities methods
+  #
+  # For example:
+  #
+  #   def entities(context={})
+  #      app = context[:app] 
+  #      [::Model::EntityInfo.new(:my_entity, 'entity description', MyEntityClass)]
+  #    end
+  #
   #
   class EntityInfo
     
@@ -38,7 +48,7 @@ module Model
     end  
       
     #
-    # Get the aspects which can be configured for the entity
+    # Retrieve the ::Plugin::Aspect instances associated to the resource
     #    
     # @return [Array] array of ::Plugins::Aspect
     #
@@ -55,24 +65,28 @@ module Model
     end
     
     #
-    # Get the entity aspects
+    # Get the aspects associated to the resource (::Model::EntityAspect)
     #
     # @return [Array] array of Model::EntityAspect
     #
-    def entity_aspects
+    def aspects
       
-      aspects
+      if not @aspects
+        @aspects = EntityAspect.all(:entity_info => id)
+      end
+      
+      @aspects
       
     end
     
     #
-    # Get the entity aspect associated to the entity
+    # Get a concrete aspects associated to the resource (::Model::EntityAspect)
     #
     # @return [EntityAspect]
     #
-    def entity_aspect(aspect)
+    def aspect(aspect)
       
-      (aspects.select { |entity_aspect| entity_aspect = aspect.to_sym }).first
+      (aspects.select { |entity_aspect| entity_aspect.aspect == aspect }).first
       
     end
     
@@ -112,20 +126,7 @@ module Model
     end    
     
     private
-    
-    #
-    # Retrieve the aspects
-    #
-    def aspects
-      
-      if not @aspects
-        @aspects = EntityAspect.all(:entity_info => id)
-      end
-      
-      @aspects
-      
-    end
-    
+        
     #
     # Retrieve the entities
     #

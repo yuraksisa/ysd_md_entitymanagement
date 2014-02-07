@@ -9,9 +9,9 @@ module Model
     include DataMapper::Resource
     include Plugins::AspectConfiguration
     
-    storage_names[:default] = 'em_entity_aspects'
+    storage_names[:default] = 'plugins_model_aspects'
     
-    property :entity_info, String, :field => 'entity_info', :length => 32, :key => true
+    property :model, String, :field => 'model', :length => 32, :key => true
     property :aspect, String, :field => 'aspect', :length => 32, :key => true
     
     #
@@ -19,7 +19,7 @@ module Model
     #
     def get_variable_name(attribute_id)
      
-      "aspect.#{aspect}.#{entity_info}.#{attribute_id}"
+      "aspect.#{aspect}.#{model}.#{attribute_id}"
      
     end
     
